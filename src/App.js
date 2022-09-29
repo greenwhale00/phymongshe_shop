@@ -5,17 +5,14 @@ import Header from './components/Header';
 import Main from './pages/Main';
 import List from './shop/List';
 import Itm from './shop/Itm';
-import Cart from './shop/Cart';
+import Cart from './shop/Cart'
+import Category from './shop/Category'
 import './css/ShopDetail.scss';
 import { Route, Routes } from 'react-router-dom';
-
 //https://desipossa.github.io/shop_cra/assets/data.json
 const App = () => {
-
     const [itm, setItm] = useState();
-    const [cart, setCart] = useState([
-        { id: 1, itm: "sssss", price: 5000 }
-    ]);
+    const [cart, setCart] = useState([]);
 
     useEffect(() => {
         const url = 'https://desipossa.github.io/shop_cra/assets/data.json'
@@ -33,7 +30,7 @@ const App = () => {
                     des: it.description,
                     color: it.product_colors,
                     time: it.created_at,
-                    type: it.product_type
+                    type: it.product_type,
                 }
             })
             setItm(shopdata);
@@ -42,25 +39,23 @@ const App = () => {
         }
         getProduct();
     }, [])
-
     return (
         <>
-            <Header />
-
             {
                 itm ?
-                    <Routes>
-                        <Route path='/' element={<Main />} />
-                        <Route path='/cart' element={<Cart cart={cart} />} />
-                        <Route path='/shopList' element={<List shopList={itm} />} />
-                        <Route path='/shopItem/:itm' element={<Itm shopList={itm} cart={cart} setCart={setCart} />} />
-
-                    </Routes>
-
-                    : <div>로딩 중 입니다...</div>
+                    <div className='wapper'>
+                        <Header cart={cart} shopList={itm} />
+                        <Routes>
+                            <Route path='/' element={<Main shopList={itm} />} />
+                            <Route path='/cart' element={<Cart cart={cart} setCart={setCart} />} />
+                            <Route path='/shopList' element={<List shopList={itm} />} />
+                            <Route path='/shopList/:cate' element={<Category shopList={itm} />} />
+                            <Route path='/shopItem/:itm' element={<Itm shopList={itm} cart={cart} setCart={setCart} />} />
+                        </Routes>
+                        <Footer />
+                    </div>
+                    : <div>로딩 중 입니다.</div>
             }
-
-            <Footer />
         </>
     )
 }
